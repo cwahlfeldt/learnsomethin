@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TutorialLayout from './TutorialLayout.astro';
+import SeriesNav from '../components/SeriesNav.astro';
+
+interface Props {
+  title: string;
+  tutorial: CollectionEntry<'tutorials'>;
+  headings: any[];
+  seriesNav: {
+    series: CollectionEntry<'tutorials'>[];
+    current: number;
+    prev: CollectionEntry<'tutorials'> | null;
+    next: CollectionEntry<'tutorials'> | null;
+  };
+}
+
+const { title, tutorial, headings, seriesNav } = Astro.props;
+---
+
+<TutorialLayout title={title} tutorial={tutorial} headings={headings}>
+  <div class="series-context">
+    <div class="series-badge">
+      Part {seriesNav.current + 1} of {seriesNav.series.length} in {tutorial.data.series}
+    </div>
+  </div>
+
+  <slot />
+
+  <SeriesNav
+    series={seriesNav.series}
+    current={seriesNav.current}
+    prev={seriesNav.prev}
+    next={seriesNav.next}
+  />
+</TutorialLayout>
+
+<style>
+  .series-context {
+    margin-bottom: 2rem;
+  }
+
+  .series-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid var(--color-primary);
+  }
+</style>

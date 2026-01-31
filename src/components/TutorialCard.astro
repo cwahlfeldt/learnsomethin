@@ -1,0 +1,175 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import DifficultyBadge from './DifficultyBadge.astro';
+
+interface Props {
+  tutorial: CollectionEntry<'tutorials'>;
+}
+
+const { tutorial } = Astro.props;
+const { data } = tutorial;
+
+// Show first 3 tags, with +N more if needed
+const visibleTags = data.tags.slice(0, 3);
+const hiddenTagsCount = data.tags.length - 3;
+---
+
+<article
+  class="tutorial-card"
+  data-category={data.category}
+  data-difficulty={data.difficulty}
+  data-tags={data.tags.join(',')}
+  data-title={data.title.toLowerCase()}
+>
+  <a href={`/tutorials/${tutorial.slug}/`} class="card-link">
+    <div class="card-header">
+      <h3 class="card-title">{data.title}</h3>
+      {data.status !== 'complete' && (
+        <span class="status-badge">{data.status}</span>
+      )}
+    </div>
+
+    <p class="card-description">{data.description}</p>
+
+    <div class="card-meta">
+      <div class="badges">
+        <span class="category-badge">{data.category}</span>
+        <DifficultyBadge difficulty={data.difficulty} size="sm" />
+      </div>
+
+      {data.tags.length > 0 && (
+        <div class="tags">
+          {visibleTags.map(tag => (
+            <span class="tag">{tag}</span>
+          ))}
+          {hiddenTagsCount > 0 && (
+            <span class="tag-more">+{hiddenTagsCount} more</span>
+          )}
+        </div>
+      )}
+
+      {data.estimatedTime && (
+        <div class="estimated-time">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          {data.estimatedTime}
+        </div>
+      )}
+    </div>
+  </a>
+</article>
+
+<style>
+  .tutorial-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .tutorial-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    border-color: var(--color-primary);
+  }
+
+  .card-link {
+    display: block;
+    padding: 1.25rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+
+  .status-badge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    background: var(--color-bg-muted);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .card-description {
+    margin: 0 0 1rem;
+    color: var(--color-text-soft);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .badges {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .category-badge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    background: var(--color-bg-soft);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-soft);
+  }
+
+  .tag-more {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .estimated-time {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .estimated-time svg {
+    flex-shrink: 0;
+  }
+</style>

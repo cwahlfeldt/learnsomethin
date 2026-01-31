@@ -1,0 +1,71 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Series } from '../lib/tutorials';
+import TutorialCard from './TutorialCard.astro';
+import SeriesCard from './SeriesCard.astro';
+
+interface Props {
+  tutorials: CollectionEntry<'tutorials'>[];
+  series: Series[];
+}
+
+const { tutorials, series } = Astro.props;
+const totalCount = tutorials.length + series.length;
+---
+
+<div class="tutorial-grid-container">
+  <div class="results-header">
+    <p id="results-count">Showing {totalCount} {totalCount === 1 ? 'tutorial' : 'tutorials'}</p>
+  </div>
+
+  <div class="card-grid">
+    {series.map(s => <SeriesCard series={s} />)}
+    {tutorials.map(t => <TutorialCard tutorial={t} />)}
+  </div>
+
+  <div id="empty-state" class="empty-state" style="display: none;">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.35-4.35"></path>
+    </svg>
+    <h3>No tutorials found</h3>
+    <p>Try adjusting your filters or search terms.</p>
+  </div>
+</div>
+
+<style>
+  .tutorial-grid-container {
+    min-height: 300px;
+  }
+
+  .results-header {
+    margin-bottom: 1rem;
+  }
+
+  #results-count {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--color-text-muted);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-text-muted);
+  }
+
+  .empty-state svg {
+    margin: 0 auto 1.5rem;
+    opacity: 0.3;
+  }
+
+  .empty-state h3 {
+    margin: 0 0 0.5rem;
+    color: var(--color-text-soft);
+  }
+
+  .empty-state p {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+</style>

@@ -1,0 +1,120 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TutorialCard from '../../components/TutorialCard.astro';
+
+export async function getStaticPaths() {
+  const paths = await getCollection('paths');
+  return paths.map(path => ({
+    params: { slug: path.slug },
+    props: { path },
+  }));
+}
+
+const { path } = Astro.props;
+const { Content } = await path.render();
+
+// Resolve tutorial slugs to full entries
+const allTutorials = await getCollection('tutorials');
+const pathTutorials = path.data.tutorials
+  .map(slug => allTutorials.find(t => t.slug === slug || t.slug.startsWith(slug)))
+  .filter(Boolean);
+---
+
+<BaseLayout title={path.data.title}>
+  <div class="container page-content">
+    <header class="path-header">
+      <a href="/paths/" class="back-link">← Learning Paths</a>
+      <h1>{path.data.title}</h1>
+      <p class="path-description">{path.data.description}</p>
+      <div class="path-meta">
+        <span>{pathTutorials.length} tutorials</span>
+        {path.data.estimatedTime && <span>• {path.data.estimatedTime}</span>}
+      </div>
+    </header>
+
+    <div class="path-content prose">
+      <Content />
+    </div>
+
+    <section class="path-tutorials">
+      <h2>Tutorials in this path</h2>
+      <ol class="tutorial-list">
+        {pathTutorials.map((tutorial, index) => (
+          <li>
+            <span class="step-number">{index + 1}</span>
+            <TutorialCard tutorial={tutorial} />
+          </li>
+        ))}
+      </ol>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-content {
+    padding: 2rem 0 4rem;
+  }
+
+  .back-link {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .path-header {
+    margin-bottom: 2rem;
+  }
+
+  .path-header h1 {
+    margin: 0.5rem 0;
+  }
+
+  .path-description {
+    font-size: 1.125rem;
+    color: var(--color-text-soft);
+    margin: 0 0 0.75rem;
+  }
+
+  .path-meta {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .path-content {
+    margin-bottom: 3rem;
+  }
+
+  .tutorial-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .tutorial-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .step-number {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+  }
+
+  .tutorial-list li > :last-child {
+    flex: 1;
+  }
+</style>

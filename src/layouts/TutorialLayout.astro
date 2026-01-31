@@ -1,0 +1,251 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import DifficultyBadge from '../components/DifficultyBadge.astro';
+
+interface Props {
+  title: string;
+  tutorial: CollectionEntry<'tutorials'>;
+  headings: any[];
+}
+
+const { title, tutorial, headings } = Astro.props;
+const { data } = tutorial;
+
+const formattedDate = data.dateCreated.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+
+const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}) : null;
+---
+
+<BaseLayout title={title} description={data.description}>
+  <article class="tutorial-article">
+    <div class="container">
+      <div class="article-layout">
+        <div class="article-sidebar">
+          {headings.length > 0 && (
+            <nav class="toc">
+              <h3 class="toc-title">Contents</h3>
+              <ul class="toc-list">
+                {headings.map(heading => (
+                  <li class={`toc-item toc-depth-${heading.depth}`}>
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
+        </div>
+
+        <div class="article-main">
+          <header class="article-header">
+            <a href="/tutorials/" class="back-link">← All Tutorials</a>
+
+            <h1 class="article-title">{data.title}</h1>
+
+            <div class="article-meta">
+              <div class="meta-badges">
+                <span class="category-badge">{data.category}</span>
+                <DifficultyBadge difficulty={data.difficulty} />
+              </div>
+
+              <div class="meta-info">
+                <time datetime={data.dateCreated.toISOString()}>
+                  {formattedDate}
+                </time>
+                {updatedDate && (
+                  <span class="updated-date">Updated: {updatedDate}</span>
+                )}
+                {data.estimatedTime && (
+                  <span class="reading-time">{data.estimatedTime}</span>
+                )}
+              </div>
+
+              {data.tags.length > 0 && (
+                <div class="article-tags">
+                  {data.tags.map(tag => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </header>
+
+          <div class="article-content prose">
+            <slot />
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .tutorial-article {
+    padding: 2rem 0 4rem;
+  }
+
+  .article-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .article-sidebar {
+    position: sticky;
+    top: 100px;
+  }
+
+  .toc {
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--card-radius);
+    padding: 1rem;
+  }
+
+  .toc-title {
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .toc-item {
+    margin-bottom: 0.5rem;
+  }
+
+  .toc-item a {
+    font-size: 0.875rem;
+    color: var(--color-text-soft);
+    text-decoration: none;
+    display: block;
+    line-height: 1.4;
+  }
+
+  .toc-item a:hover {
+    color: var(--color-primary);
+  }
+
+  .toc-depth-2 {
+    padding-left: 0;
+  }
+
+  .toc-depth-3 {
+    padding-left: 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    margin-bottom: 1rem;
+  }
+
+  .back-link:hover {
+    color: var(--color-primary);
+  }
+
+  .article-title {
+    margin: 0 0 1.5rem;
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 2rem;
+  }
+
+  .meta-badges {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .category-badge {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .meta-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .updated-date::before {
+    content: '•';
+    margin-right: 1rem;
+  }
+
+  .reading-time::before {
+    content: '•';
+    margin-right: 1rem;
+  }
+
+  .article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.8125rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    background: var(--color-bg-soft);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  @media (max-width: 968px) {
+    .article-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .article-sidebar {
+      position: static;
+      order: -1;
+    }
+
+    .toc {
+      max-width: 100%;
+    }
+
+    .article-title {
+      font-size: 2rem;
+    }
+  }
+</style>

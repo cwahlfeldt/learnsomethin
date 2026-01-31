@@ -1,0 +1,202 @@
+---
+title: JavaScript Array Methods
+description: Master JavaScript array methods with interactive examples
+category: programming
+tags: ["javascript", "arrays", "interactive"]
+difficulty: beginner
+status: complete
+dateCreated: 2025-01-31
+estimatedTime: "30 min"
+---
+
+import CodePlayground from '../../components/CodePlayground.astro';
+
+# JavaScript Array Methods
+
+Arrays are one of the most commonly used data structures in JavaScript. This tutorial covers essential array methods with interactive examples you can run directly in your browser!
+
+## Creating Arrays
+
+There are several ways to create arrays in JavaScript:
+
+<CodePlayground code={`// Array literal
+const fruits = ['apple', 'banana', 'orange'];
+console.log(fruits);
+
+// Array constructor
+const numbers = new Array(1, 2, 3, 4, 5);
+console.log(numbers);
+
+// Empty array
+const empty = [];
+console.log('Empty array:', empty);`} />
+
+Try modifying the code above and clicking "Run Code" to see the results!
+
+## Array.map()
+
+The `map()` method creates a new array by transforming each element:
+
+<CodePlayground code={`const numbers = [1, 2, 3, 4, 5];
+
+// Double each number
+const doubled = numbers.map(num => num * 2);
+console.log('Original:', numbers);
+console.log('Doubled:', doubled);
+
+// Convert to strings
+const strings = numbers.map(num => 'Number: ' + num);
+console.log('Strings:', strings);`} />
+
+**Key Points:**
+- Returns a new array (doesn't modify original)
+- Useful for transforming data
+- Always returns an array of the same length
+
+## Array.filter()
+
+The `filter()` method creates a new array with elements that pass a test:
+
+<CodePlayground code={`const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Get only even numbers
+const evens = numbers.filter(num => num % 2 === 0);
+console.log('Even numbers:', evens);
+
+// Get numbers greater than 5
+const greaterThanFive = numbers.filter(num => num > 5);
+console.log('Greater than 5:', greaterThanFive);
+
+// Filter can return empty array
+const greaterThan100 = numbers.filter(num => num > 100);
+console.log('Greater than 100:', greaterThan100);`} />
+
+## Array.reduce()
+
+The `reduce()` method reduces an array to a single value:
+
+<CodePlayground code={`const numbers = [1, 2, 3, 4, 5];
+
+// Sum all numbers
+const sum = numbers.reduce((total, num) => total + num, 0);
+console.log('Sum:', sum);
+
+// Find maximum
+const max = numbers.reduce((max, num) => num > max ? num : max);
+console.log('Maximum:', max);
+
+// Count occurrences
+const fruits = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple'];
+const count = fruits.reduce((acc, fruit) => {
+  acc[fruit] = (acc[fruit] || 0) + 1;
+  return acc;
+}, {});
+console.log('Fruit count:', count);`} />
+
+## Array.find() and Array.findIndex()
+
+Find elements in an array:
+
+<CodePlayground code={`const users = [
+  { id: 1, name: 'Alice', age: 25 },
+  { id: 2, name: 'Bob', age: 30 },
+  { id: 3, name: 'Charlie', age: 35 }
+];
+
+// Find first user over 30
+const user = users.find(u => u.age > 30);
+console.log('User over 30:', user);
+
+// Find index of Bob
+const bobIndex = users.findIndex(u => u.name === 'Bob');
+console.log('Bob index:', bobIndex);
+
+// Returns undefined if not found
+const notFound = users.find(u => u.age > 100);
+console.log('Not found:', notFound);`} />
+
+## Array.some() and Array.every()
+
+Test if elements meet a condition:
+
+<CodePlayground code={`const numbers = [1, 2, 3, 4, 5];
+
+// Check if any number is even
+const hasEven = numbers.some(num => num % 2 === 0);
+console.log('Has even number:', hasEven);
+
+// Check if all numbers are positive
+const allPositive = numbers.every(num => num > 0);
+console.log('All positive:', allPositive);
+
+// Check if all numbers are even
+const allEven = numbers.every(num => num % 2 === 0);
+console.log('All even:', allEven);`} />
+
+## Chaining Methods
+
+You can chain multiple array methods together:
+
+<CodePlayground code={`const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Get sum of squares of even numbers
+const result = numbers
+  .filter(num => num % 2 === 0)  // [2, 4, 6, 8, 10]
+  .map(num => num * num)          // [4, 16, 36, 64, 100]
+  .reduce((sum, num) => sum + num, 0);  // 220
+
+console.log('Sum of squares of evens:', result);
+
+// Get names of users over 25, uppercased
+const users = [
+  { name: 'alice', age: 20 },
+  { name: 'bob', age: 30 },
+  { name: 'charlie', age: 35 }
+];
+
+const names = users
+  .filter(user => user.age > 25)
+  .map(user => user.name.toUpperCase());
+
+console.log('Names:', names);`} />
+
+## Practice Exercise
+
+Try this challenge: Given an array of products, find the total price of all products in the "electronics" category:
+
+<CodePlayground code={`const products = [
+  { name: 'Laptop', category: 'electronics', price: 999 },
+  { name: 'Shirt', category: 'clothing', price: 29 },
+  { name: 'Phone', category: 'electronics', price: 599 },
+  { name: 'Shoes', category: 'clothing', price: 79 },
+  { name: 'Tablet', category: 'electronics', price: 399 }
+];
+
+// Your solution here:
+const total = products
+  .filter(p => p.category === 'electronics')
+  .reduce((sum, p) => sum + p.price, 0);
+
+console.log('Total electronics price:', total);`} />
+
+## Summary
+
+| Method | Returns | Use Case |
+|--------|---------|----------|
+| `map()` | New array | Transform each element |
+| `filter()` | New array | Select elements that pass test |
+| `reduce()` | Single value | Combine elements into one value |
+| `find()` | Single element | Find first matching element |
+| `some()` | Boolean | Check if any element passes test |
+| `every()` | Boolean | Check if all elements pass test |
+
+These methods are fundamental to modern JavaScript. Practice with the interactive examples above to master them!
+
+## Next Steps
+
+- Learn about `Array.flat()` and `Array.flatMap()`
+- Explore `Array.sort()` for ordering arrays
+- Study performance implications of chaining methods
+- Practice with real-world data transformation challenges
+
+Happy coding! 🚀

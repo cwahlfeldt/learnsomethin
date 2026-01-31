@@ -1,0 +1,43 @@
+---
+interface Props {
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  size?: 'sm' | 'md';
+}
+
+const { difficulty, size = 'md' } = Astro.props;
+---
+
+<span class={`difficulty-badge ${difficulty} ${size}`}>
+  {difficulty}
+</span>
+
+<style>
+  .difficulty-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  .difficulty-badge.sm {
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .difficulty-badge.beginner {
+    background: var(--color-beginner-bg);
+    color: var(--color-beginner);
+  }
+
+  .difficulty-badge.intermediate {
+    background: var(--color-intermediate-bg);
+    color: var(--color-intermediate);
+  }
+
+  .difficulty-badge.advanced {
+    background: var(--color-advanced-bg);
+    color: var(--color-advanced);
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LearningPathCard from '../../components/LearningPathCard.astro';
+import { getCollection } from 'astro:content';
+
+const paths = await getCollection('paths');
+---
+
+<BaseLayout title="Learning Paths">
+  <div class="container page-content">
+    <h1>Learning Paths</h1>
+    <p class="page-description">Curated sequences of tutorials for structured learning.</p>
+
+    <div class="paths-grid">
+      {paths.map(path => (
+        <LearningPathCard path={path} tutorialCount={path.data.tutorials.length} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .page-content {
+    padding: 2rem 0 4rem;
+  }
+
+  h1 {
+    margin: 0 0 0.5rem;
+  }
+
+  .page-description {
+    color: var(--color-text-soft);
+    margin: 0 0 2rem;
+  }
+
+  .paths-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+</style>

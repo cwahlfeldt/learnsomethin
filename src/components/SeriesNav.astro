@@ -1,0 +1,173 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  series: CollectionEntry<'tutorials'>[];
+  current: number;
+  prev: CollectionEntry<'tutorials'> | null;
+  next: CollectionEntry<'tutorials'> | null;
+}
+
+const { series, current, prev, next } = Astro.props;
+const seriesSlug = series[0]?.data.series;
+const indexTutorial = series.find(t => t.data.seriesOrder === 0) || series[0];
+---
+
+<nav class="series-nav">
+  <div class="nav-container">
+    <div class="nav-prev">
+      {prev && (
+        <a href={`/tutorials/${prev.slug}/`} class="nav-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <div class="nav-text">
+            <span class="nav-label">Previous</span>
+            <span class="nav-title">{prev.data.title}</span>
+          </div>
+        </a>
+      )}
+    </div>
+
+    <div class="nav-center">
+      <a href={`/tutorials/${indexTutorial.slug}/`} class="series-overview">
+        <span class="progress-text">Part {current + 1} of {series.length}</span>
+        <span class="series-link">Series Overview</span>
+      </a>
+    </div>
+
+    <div class="nav-next">
+      {next && (
+        <a href={`/tutorials/${next.slug}/`} class="nav-link">
+          <div class="nav-text">
+            <span class="nav-label">Next</span>
+            <span class="nav-title">{next.data.title}</span>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+      )}
+    </div>
+  </div>
+</nav>
+
+<style>
+  .series-nav {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--card-radius);
+  }
+
+  .nav-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .nav-prev,
+  .nav-next,
+  .nav-center {
+    display: flex;
+  }
+
+  .nav-next {
+    justify-content: flex-end;
+  }
+
+  .nav-center {
+    justify-content: center;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.2s ease;
+    max-width: 300px;
+  }
+
+  .nav-link:hover {
+    border-color: var(--color-primary);
+    background: var(--color-bg-soft);
+  }
+
+  .nav-link svg {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+  }
+
+  .nav-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+  }
+
+  .nav-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .series-overview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+
+  .progress-text {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .series-link {
+    font-size: 0.875rem;
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .series-link:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .nav-container {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .nav-prev,
+    .nav-next,
+    .nav-center {
+      justify-content: center;
+    }
+
+    .nav-link {
+      max-width: 100%;
+    }
+  }
+</style>

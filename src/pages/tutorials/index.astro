@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FilterBar from '../../components/FilterBar.astro';
+import TutorialGrid from '../../components/TutorialGrid.astro';
+import { getOrganizedTutorials } from '../../lib/tutorials';
+
+const { standalone, series, categories, tags } = await getOrganizedTutorials();
+---
+
+<BaseLayout title="Tutorials">
+  <div class="container page-content">
+    <h1>Tutorials</h1>
+
+    <FilterBar categories={categories} tags={tags} />
+
+    <TutorialGrid tutorials={standalone} series={series} />
+  </div>
+</BaseLayout>
+
+<style>
+  .page-content {
+    padding: 2rem 0 4rem;
+  }
+
+  h1 {
+    margin: 0 0 1.5rem;
+  }
+</style>

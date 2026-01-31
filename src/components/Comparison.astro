@@ -1,0 +1,147 @@
+---
+interface Props {
+  good?: string;
+  bad?: string;
+  title?: string;
+}
+
+const { good, bad, title = 'Comparison' } = Astro.props;
+---
+
+<div class="comparison">
+  {title && <h4 class="comparison-title">{title}</h4>}
+  <div class="comparison-grid">
+    {bad && (
+      <div class="comparison-side bad">
+        <div class="comparison-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+          <span>Don't do this</span>
+        </div>
+        <div class="comparison-content">
+          <slot name="bad">
+            <pre><code>{bad}</code></pre>
+          </slot>
+        </div>
+      </div>
+    )}
+
+    {good && (
+      <div class="comparison-side good">
+        <div class="comparison-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="9 12 11 14 15 10"></polyline>
+          </svg>
+          <span>Do this instead</span>
+        </div>
+        <div class="comparison-content">
+          <slot name="good">
+            <pre><code>{good}</code></pre>
+          </slot>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .comparison {
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    background: var(--color-bg-soft);
+  }
+
+  .comparison-title {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg-muted);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .comparison-side {
+    border-right: 1px solid var(--color-border);
+  }
+
+  .comparison-side:last-child {
+    border-right: none;
+  }
+
+  .comparison-side.bad {
+    background: var(--color-advanced-bg);
+  }
+
+  .comparison-side.good {
+    background: var(--color-beginner-bg);
+  }
+
+  .comparison-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .comparison-side.bad .comparison-header {
+    color: var(--color-advanced);
+  }
+
+  .comparison-side.good .comparison-header {
+    color: var(--color-beginner);
+  }
+
+  .comparison-header svg {
+    flex-shrink: 0;
+  }
+
+  .comparison-content {
+    padding: 1rem;
+  }
+
+  .comparison-content pre {
+    margin: 0;
+    background: var(--color-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+
+  .comparison-content code {
+    font-family: ui-monospace, monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .comparison-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .comparison-side {
+      border-right: none;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .comparison-side:last-child {
+      border-bottom: none;
+    }
+  }
+</style>

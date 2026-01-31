@@ -1,0 +1,160 @@
+---
+interface Props {
+  code: string;
+  language?: string;
+}
+
+const { code, language = 'javascript' } = Astro.props;
+const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="code-playground">
+  <div class="playground-editor">
+    <div class="editor-header">
+      <span class="editor-label">Code Editor</span>
+      <button class="run-button" data-playground={id}>Run Code</button>
+    </div>
+    <pre class="editor-content"><code>{code}</code></pre>
+  </div>
+
+  <div class="playground-output">
+    <div class="output-header">
+      <span class="output-label">Output</span>
+      <button class="clear-button" data-playground={id}>Clear</button>
+    </div>
+    <pre class="output-content" id={`output-${id}`}></pre>
+  </div>
+</div>
+
+<style>
+  .code-playground {
+    margin: 1.5rem 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    background: var(--color-bg-soft);
+  }
+
+  .playground-editor,
+  .playground-output {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .playground-output {
+    border-bottom: none;
+  }
+
+  .editor-header,
+  .output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: var(--color-bg-muted);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .editor-label,
+  .output-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-soft);
+  }
+
+  .run-button,
+  .clear-button {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .clear-button {
+    background: var(--color-bg);
+    color: var(--color-text-soft);
+    border: 1px solid var(--color-border);
+  }
+
+  .run-button:hover,
+  .clear-button:hover {
+    opacity: 0.8;
+  }
+
+  .editor-content,
+  .output-content {
+    margin: 0;
+    padding: 1rem;
+    background: var(--color-bg);
+    font-family: ui-monospace, monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow-x: auto;
+  }
+
+  .output-content {
+    min-height: 100px;
+    color: var(--color-text-soft);
+  }
+
+  .output-content:empty::before {
+    content: '// Click "Run Code" to see output';
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+</style>
+
+<script>
+  function initPlaygrounds() {
+    document.querySelectorAll('[data-playground]').forEach(button => {
+      const playgroundId = button.getAttribute('data-playground');
+
+      if (button.classList.contains('run-button')) {
+        button.addEventListener('click', () => {
+          const editor = button.closest('.code-playground')?.querySelector('.editor-content code');
+          const output = document.getElementById(`output-${playgroundId}`);
+
+          if (!editor || !output) return;
+
+          const code = editor.textContent || '';
+
+          // Capture console.log
+          const logs: string[] = [];
+          const originalLog = console.log;
+          console.log = (...args) => {
+            logs.push(args.map(arg =>
+              typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' '));
+          };
+
+          try {
+            // Execute the code
+            eval(code);
+            output.textContent = logs.join('\n') || '// No output';
+          } catch (error) {
+            output.textContent = `Error: ${error instanceof Error ? error.message : String(error)}`;
+          } finally {
+            // Restore console.log
+            console.log = originalLog;
+          }
+        });
+      }
+
+      if (button.classList.contains('clear-button')) {
+        button.addEventListener('click', () => {
+          const output = document.getElementById(`output-${playgroundId}`);
+          if (output) output.textContent = '';
+        });
+      }
+    });
+  }
+
+  // Initialize on page load
+  initPlaygrounds();
+
+  // Re-initialize after navigation
+  document.addEventListener('astro:page-load', initPlaygrounds);
+</script>

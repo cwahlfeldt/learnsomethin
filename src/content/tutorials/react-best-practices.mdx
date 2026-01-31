@@ -1,0 +1,308 @@
+---
+title: React Best Practices
+description: Learn common React patterns and anti-patterns with visual comparisons
+category: webdev
+tags: ["react", "javascript", "best-practices"]
+difficulty: intermediate
+status: complete
+dateCreated: 2025-01-31
+estimatedTime: "25 min"
+---
+
+import Comparison from '../../components/Comparison.astro';
+import DifficultyBadge from '../../components/DifficultyBadge.astro';
+
+# React Best Practices
+
+This guide covers essential React patterns and common mistakes to avoid. Each section shows what NOT to do alongside the recommended approach.
+
+<div style="padding: 1rem; background: var(--color-bg-soft); border-left: 4px solid var(--color-primary); margin: 1rem 0;">
+  <strong>📚 Level:</strong> <DifficultyBadge difficulty="intermediate" size="sm" />
+  <br />
+  Assumes basic React knowledge (components, props, state)
+</div>
+
+## State Management
+
+### Don't Mutate State Directly
+
+<Comparison
+  title="State Mutation"
+  bad={`// ❌ Bad: Mutating state directly
+function TodoList() {
+  const [todos, setTodos] = useState([]);
+
+  const addTodo = (text) => {
+    todos.push({ id: Date.now(), text });
+    setTodos(todos); // This won't trigger re-render!
+  };
+
+  return <div>...</div>;
+}`}
+  good={`// ✅ Good: Create new array
+function TodoList() {
+  const [todos, setTodos] = useState([]);
+
+  const addTodo = (text) => {
+    setTodos([...todos, { id: Date.now(), text }]);
+    // Or: setTodos(prev => [...prev, newTodo]);
+  };
+
+  return <div>...</div>;
+}`}
+/>
+
+**Why?** React relies on immutability to detect changes. Mutating state directly won't trigger re-renders.
+
+## Props and Component Composition
+
+### Avoid Prop Drilling
+
+<Comparison
+  title="Props Drilling"
+  bad={`// ❌ Bad: Passing props through multiple levels
+function App() {
+  const [user, setUser] = useState(null);
+  return <Layout user={user} setUser={setUser} />;
+}
+
+function Layout({ user, setUser }) {
+  return <Sidebar user={user} setUser={setUser} />;
+}
+
+function Sidebar({ user, setUser }) {
+  return <UserProfile user={user} setUser={setUser} />;
+}
+
+function UserProfile({ user, setUser }) {
+  return <div>{user.name}</div>;
+}`}
+  good={`// ✅ Good: Use Context API
+const UserContext = createContext();
+
+function App() {
+  const [user, setUser] = useState(null);
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      <Layout />
+    </UserContext.Provider>
+  );
+}
+
+function UserProfile() {
+  const { user } = useContext(UserContext);
+  return <div>{user.name}</div>;
+}`}
+/>
+
+**Why?** Context eliminates unnecessary prop drilling and makes components more reusable.
+
+## useEffect Best Practices
+
+### Always Specify Dependencies
+
+<Comparison
+  title="useEffect Dependencies"
+  bad={`// ❌ Bad: Missing dependencies
+function SearchResults({ query }) {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    fetch(\`/api/search?q=\${query}\`)
+      .then(res => res.json())
+      .then(setResults);
+  }, []); // Missing 'query' dependency!
+
+  return <div>...</div>;
+}`}
+  good={`// ✅ Good: Include all dependencies
+function SearchResults({ query }) {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    fetch(\`/api/search?q=\${query}\`)
+      .then(res => res.json())
+      .then(setResults);
+  }, [query]); // Runs when query changes
+
+  return <div>...</div>;
+}`}
+/>
+
+**Why?** Missing dependencies can cause stale closures and bugs. Use ESLint's `exhaustive-deps` rule.
+
+## Performance Optimization
+
+### Memoize Expensive Calculations
+
+<Comparison
+  title="Expensive Calculations"
+  bad={`// ❌ Bad: Recalculating on every render
+function ProductList({ products, filters }) {
+  // This runs on EVERY render!
+  const filteredProducts = products.filter(p =>
+    p.category === filters.category &&
+    p.price >= filters.minPrice &&
+    p.price <= filters.maxPrice
+  );
+
+  return <div>{filteredProducts.map(...)}</div>;
+}`}
+  good={`// ✅ Good: Memoize with useMemo
+function ProductList({ products, filters }) {
+  const filteredProducts = useMemo(() =>
+    products.filter(p =>
+      p.category === filters.category &&
+      p.price >= filters.minPrice &&
+      p.price <= filters.maxPrice
+    ),
+    [products, filters] // Only recalc when these change
+  );
+
+  return <div>{filteredProducts.map(...)}</div>;
+}`}
+/>
+
+**Why?** `useMemo` prevents expensive calculations from running on every render.
+
+## Component Patterns
+
+### Use Fragments Instead of Unnecessary Divs
+
+<Comparison
+  title="Wrapper Elements"
+  bad={`// ❌ Bad: Extra div in DOM
+function UserInfo({ name, email }) {
+  return (
+    <div>
+      <h2>{name}</h2>
+      <p>{email}</p>
+    </div>
+  );
+}
+
+// Results in extra div wrapper
+<div className="user-card">
+  <div> {/* Unnecessary! */}
+    <h2>John</h2>
+    <p>john@example.com</p>
+  </div>
+</div>`}
+  good={`// ✅ Good: Use Fragment
+function UserInfo({ name, email }) {
+  return (
+    <>
+      <h2>{name}</h2>
+      <p>{email}</p>
+    </>
+  );
+}
+
+// Clean DOM
+<div className="user-card">
+  <h2>John</h2>
+  <p>john@example.com</p>
+</div>`}
+/>
+
+**Why?** Fragments keep the DOM cleaner and avoid unnecessary nesting.
+
+## Event Handlers
+
+### Don't Create Functions in Render
+
+<Comparison
+  title="Event Handler Functions"
+  bad={`// ❌ Bad: New function every render
+function ItemList({ items, onDelete }) {
+  return (
+    <ul>
+      {items.map(item => (
+        <li key={item.id}>
+          {item.name}
+          <button onClick={() => onDelete(item.id)}>
+            Delete
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}`}
+  good={`// ✅ Good: Use useCallback or data attributes
+function ItemList({ items, onDelete }) {
+  const handleDelete = useCallback((e) => {
+    onDelete(e.currentTarget.dataset.id);
+  }, [onDelete]);
+
+  return (
+    <ul>
+      {items.map(item => (
+        <li key={item.id}>
+          {item.name}
+          <button data-id={item.id} onClick={handleDelete}>
+            Delete
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}`}
+/>
+
+**Why?** Creating functions in render causes unnecessary re-renders in child components.
+
+## Key Takeaways
+
+| Practice | Impact | Difficulty |
+|----------|--------|-----------|
+| Don't mutate state | Prevents bugs | <DifficultyBadge difficulty="beginner" size="sm" /> |
+| Use Context for shared state | Reduces prop drilling | <DifficultyBadge difficulty="intermediate" size="sm" /> |
+| Specify useEffect deps | Prevents stale closures | <DifficultyBadge difficulty="intermediate" size="sm" /> |
+| Memoize expensive calcs | Improves performance | <DifficultyBadge difficulty="advanced" size="sm" /> |
+| Use Fragments | Cleaner DOM | <DifficultyBadge difficulty="beginner" size="sm" /> |
+
+## Additional Resources
+
+- [React Documentation](https://react.dev/)
+- [React DevTools](https://react.dev/learn/react-developer-tools)
+- [ESLint Plugin React](https://github.com/jsx-eslint/eslint-plugin-react)
+
+## Practice Exercise
+
+Try refactoring this component to follow best practices:
+
+```jsx
+function BadComponent({ items }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log('Component rendered');
+  });
+
+  const filtered = items.filter(i => i.active);
+
+  return (
+    <div>
+      <div>
+        <div>
+          {filtered.map(item => (
+            <div onClick={() => setCount(count + 1)}>
+              {item.name}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>Count: {count}</div>
+    </div>
+  );
+}
+```
+
+Issues to fix:
+1. useEffect without dependencies
+2. No memoization of filter
+3. Unnecessary div wrappers
+4. Missing keys in map
+5. Creating function in render
+
+Happy refactoring! 🚀

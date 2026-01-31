@@ -1,0 +1,363 @@
+---
+interface Props {
+  categories: string[];
+  tags: string[];
+}
+
+const { categories, tags } = Astro.props;
+---
+
+<div class="filter-bar">
+  <div class="filter-controls">
+    <div class="filter-group">
+      <label for="category-filter">Category</label>
+      <select id="category-filter">
+        <option value="">All Categories</option>
+        {categories.map(category => (
+          <option value={category}>{category}</option>
+        ))}
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="difficulty-filter">Difficulty</label>
+      <select id="difficulty-filter">
+        <option value="">All Levels</option>
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+      </select>
+    </div>
+
+    <div class="filter-group search-group">
+      <label for="search-filter">Search</label>
+      <input
+        type="text"
+        id="search-filter"
+        placeholder="Search tutorials..."
+      />
+    </div>
+
+    <button id="clear-filters" class="clear-button" style="display: none;">
+      Clear Filters
+    </button>
+  </div>
+
+  {tags.length > 0 && (
+    <div class="tag-filters">
+      <span class="tag-label">Tags:</span>
+      <div class="tag-chips">
+        {tags.map(tag => (
+          <button class="tag-chip" data-tag={tag}>
+            {tag}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .filter-bar {
+    background: var(--color-bg-soft);
+    border: 1px solid var(--color-border);
+    border-radius: var(--card-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .search-group {
+    flex: 2;
+    min-width: 200px;
+  }
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-soft);
+  }
+
+  select,
+  input[type="text"] {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 0.9375rem;
+    font-family: inherit;
+  }
+
+  select:focus,
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
+  }
+
+  .clear-button {
+    padding: 0.5rem 1rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .clear-button:hover {
+    background: var(--color-bg-muted);
+    border-color: var(--color-text-muted);
+  }
+
+  .tag-filters {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .tag-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-soft);
+  }
+
+  .tag-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag-chip {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-bg);
+    color: var(--color-text-soft);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tag-chip:hover {
+    background: var(--color-bg-muted);
+    border-color: var(--color-primary);
+  }
+
+  .tag-chip.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+  }
+
+  @media (max-width: 640px) {
+    .filter-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .filter-group,
+    .search-group {
+      min-width: 100%;
+    }
+  }
+</style>
+
+<script>
+  function initFilters() {
+    const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
+    const difficultyFilter = document.getElementById('difficulty-filter') as HTMLSelectElement;
+    const searchFilter = document.getElementById('search-filter') as HTMLInputElement;
+    const clearButton = document.getElementById('clear-filters') as HTMLButtonElement;
+    const tagChips = document.querySelectorAll('.tag-chip');
+    const cards = document.querySelectorAll('.tutorial-card');
+
+    let activeFilters = {
+      category: '',
+      difficulty: '',
+      search: '',
+      tags: new Set<string>(),
+    };
+
+    function updateURL() {
+      const params = new URLSearchParams();
+      if (activeFilters.category) params.set('category', activeFilters.category);
+      if (activeFilters.difficulty) params.set('difficulty', activeFilters.difficulty);
+      if (activeFilters.search) params.set('search', activeFilters.search);
+      if (activeFilters.tags.size > 0) params.set('tags', Array.from(activeFilters.tags).join(','));
+
+      const newURL = params.toString() ? `?${params.toString()}` : window.location.pathname;
+      window.history.replaceState({}, '', newURL);
+    }
+
+    function filterCards() {
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cardElement = card as HTMLElement;
+        const category = cardElement.dataset.category || '';
+        const difficulty = cardElement.dataset.difficulty || '';
+        const tags = cardElement.dataset.tags ? cardElement.dataset.tags.split(',') : [];
+        const title = cardElement.dataset.title || '';
+
+        let visible = true;
+
+        // Category filter
+        if (activeFilters.category && category !== activeFilters.category) {
+          visible = false;
+        }
+
+        // Difficulty filter
+        if (activeFilters.difficulty && difficulty !== activeFilters.difficulty) {
+          visible = false;
+        }
+
+        // Search filter
+        if (activeFilters.search && !title.includes(activeFilters.search.toLowerCase())) {
+          visible = false;
+        }
+
+        // Tag filters (show if has ANY of the selected tags)
+        if (activeFilters.tags.size > 0) {
+          const hasTag = Array.from(activeFilters.tags).some(tag => tags.includes(tag));
+          if (!hasTag) visible = false;
+        }
+
+        cardElement.classList.toggle('hidden', !visible);
+        if (visible) visibleCount++;
+      });
+
+      // Show/hide empty state
+      const emptyState = document.getElementById('empty-state');
+      if (emptyState) {
+        emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+
+      // Update results count
+      const resultsCount = document.getElementById('results-count');
+      if (resultsCount) {
+        resultsCount.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'tutorial' : 'tutorials'}`;
+      }
+
+      // Show/hide clear button
+      const hasFilters = activeFilters.category || activeFilters.difficulty || activeFilters.search || activeFilters.tags.size > 0;
+      clearButton.style.display = hasFilters ? 'block' : 'none';
+
+      updateURL();
+    }
+
+    // Category filter
+    categoryFilter?.addEventListener('change', () => {
+      activeFilters.category = categoryFilter.value;
+      filterCards();
+    });
+
+    // Difficulty filter
+    difficultyFilter?.addEventListener('change', () => {
+      activeFilters.difficulty = difficultyFilter.value;
+      filterCards();
+    });
+
+    // Search filter
+    searchFilter?.addEventListener('input', () => {
+      activeFilters.search = searchFilter.value;
+      filterCards();
+    });
+
+    // Tag filters
+    tagChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const tag = (chip as HTMLElement).dataset.tag;
+        if (!tag) return;
+
+        if (activeFilters.tags.has(tag)) {
+          activeFilters.tags.delete(tag);
+          chip.classList.remove('active');
+        } else {
+          activeFilters.tags.add(tag);
+          chip.classList.add('active');
+        }
+
+        filterCards();
+      });
+    });
+
+    // Clear filters
+    clearButton?.addEventListener('click', () => {
+      activeFilters = {
+        category: '',
+        difficulty: '',
+        search: '',
+        tags: new Set(),
+      };
+
+      categoryFilter.value = '';
+      difficultyFilter.value = '';
+      searchFilter.value = '';
+      tagChips.forEach(chip => chip.classList.remove('active'));
+
+      filterCards();
+    });
+
+    // Initialize from URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlCategory = urlParams.get('category');
+    const urlDifficulty = urlParams.get('difficulty');
+    const urlSearch = urlParams.get('search');
+    const urlTags = urlParams.get('tags');
+
+    if (urlCategory) {
+      categoryFilter.value = urlCategory;
+      activeFilters.category = urlCategory;
+    }
+    if (urlDifficulty) {
+      difficultyFilter.value = urlDifficulty;
+      activeFilters.difficulty = urlDifficulty;
+    }
+    if (urlSearch) {
+      searchFilter.value = urlSearch;
+      activeFilters.search = urlSearch;
+    }
+    if (urlTags) {
+      urlTags.split(',').forEach(tag => {
+        activeFilters.tags.add(tag);
+        tagChips.forEach(chip => {
+          if ((chip as HTMLElement).dataset.tag === tag) {
+            chip.classList.add('active');
+          }
+        });
+      });
+    }
+
+    // Run initial filter
+    if (urlCategory || urlDifficulty || urlSearch || urlTags) {
+      filterCards();
+    }
+  }
+
+  // Initialize on page load
+  initFilters();
+
+  // Re-initialize after navigation (for Astro view transitions)
+  document.addEventListener('astro:page-load', initFilters);
+</script>

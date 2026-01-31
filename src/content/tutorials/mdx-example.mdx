@@ -1,0 +1,106 @@
+---
+title: Interactive MDX Tutorial
+description: Learn how to use MDX with interactive components in your tutorials
+category: webdev
+tags: ["mdx", "astro", "interactive"]
+difficulty: intermediate
+status: complete
+dateCreated: 2025-01-31
+estimatedTime: "15 min"
+---
+
+import DifficultyBadge from '../../components/DifficultyBadge.astro';
+
+# Interactive MDX Tutorial
+
+MDX allows you to use components directly in your markdown content! This tutorial demonstrates some of the powerful features you can use.
+
+## Using Components Inline
+
+You can import and use Astro components right in your content:
+
+<DifficultyBadge difficulty="beginner" />
+<DifficultyBadge difficulty="intermediate" />
+<DifficultyBadge difficulty="advanced" />
+
+## JavaScript Expressions
+
+MDX supports JavaScript expressions inline:
+
+- The current year is {new Date().getFullYear()}
+- Random number: {Math.floor(Math.random() * 100)}
+- String manipulation: {"hello world".toUpperCase()}
+
+## Custom Components
+
+You can create custom components for interactive elements:
+
+<div style="padding: 1rem; background: var(--color-bg-soft); border: 2px solid var(--color-primary); border-radius: 8px; margin: 1rem 0;">
+  <strong>💡 Pro Tip:</strong> MDX lets you add custom styling and interactivity to your tutorials!
+</div>
+
+## Code Blocks Still Work
+
+```javascript
+// Regular code blocks work as expected
+function fibonacci(n) {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log(fibonacci(10)); // 55
+```
+
+## Interactive Example
+
+Here's a simple counter using inline HTML and script:
+
+<div id="counter-demo" style="padding: 1.5rem; background: var(--color-bg-soft); border-radius: 8px; text-align: center; margin: 1rem 0;">
+  <p style="font-size: 2rem; margin: 0 0 1rem; font-weight: bold;" id="count">0</p>
+  <button
+    onclick="document.getElementById('count').textContent = parseInt(document.getElementById('count').textContent) + 1"
+    style="padding: 0.5rem 1rem; background: var(--color-primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem;"
+  >
+    Increment
+  </button>
+</div>
+
+## Tables with Custom Styling
+
+| Feature | Markdown | MDX |
+|---------|----------|-----|
+| Components | ❌ | ✅ |
+| JavaScript | ❌ | ✅ |
+| Interactivity | ❌ | ✅ |
+| Simple Syntax | ✅ | ✅ |
+
+## Nested Components
+
+You can even nest components and use complex layouts:
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0;">
+  <div style="padding: 1rem; background: var(--color-beginner-bg); border-radius: 8px; text-align: center;">
+    <strong>Easy</strong>
+  </div>
+  <div style="padding: 1rem; background: var(--color-intermediate-bg); border-radius: 8px; text-align: center;">
+    <strong>Medium</strong>
+  </div>
+  <div style="padding: 1rem; background: var(--color-advanced-bg); border-radius: 8px; text-align: center;">
+    <strong>Hard</strong>
+  </div>
+</div>
+
+## Best Practices
+
+When using MDX in tutorials:
+
+1. **Keep it Simple** - Don't overuse interactive elements
+2. **Accessibility** - Ensure all interactive elements are keyboard accessible
+3. **Performance** - Minimize client-side JavaScript
+4. **Progressive Enhancement** - Content should work without JavaScript
+
+## Conclusion
+
+MDX opens up powerful possibilities for creating engaging, interactive tutorials while maintaining the simplicity of markdown for most content.
+
+Use it wisely to enhance learning experiences! 🚀
