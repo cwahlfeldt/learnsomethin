@@ -169,7 +169,7 @@ if (!SDL_Init(SDL_INIT_VIDEO)) {
 }
 ```
 
-SDL3 changed from SDL2's pattern - `SDL_Init()` now returns `true` on success. We only initialize the video subsystem here, but you can combine flags like `SDL_INIT_VIDEO | SDL_INIT_AUDIO`.
+`SDL_Init()` returns `true` on success, so we check for failure with `!`. We initialize the video subsystem here, but you can combine flags like `SDL_INIT_VIDEO | SDL_INIT_AUDIO` for audio support.
 
 ### Creating a Window
 
@@ -181,7 +181,7 @@ SDL_Window *window = SDL_CreateWindow(
 );
 ```
 
-SDL3 simplified window creation - no more position parameters (use `SDL_SetWindowPosition()` if needed).
+The window is created centered by default. You can reposition it later with `SDL_SetWindowPosition()` if needed.
 
 ### The Renderer
 
@@ -204,7 +204,7 @@ while (SDL_PollEvent(&event)) {
 }
 ```
 
-SDL3 renamed events with the `SDL_EVENT_` prefix. Common events include:
+Events use the `SDL_EVENT_` prefix. Here are the most common ones:
 - `SDL_EVENT_QUIT` - Window close button clicked
 - `SDL_EVENT_KEY_DOWN` / `SDL_EVENT_KEY_UP` - Keyboard input
 - `SDL_EVENT_MOUSE_MOTION` - Mouse movement
@@ -327,19 +327,6 @@ This demonstrates:
 - **Continuous input** - Using `SDL_GetKeyboardState()` for smooth controls
 - **Game loop structure** - Input, update, render
 
-## Key Differences from SDL2
-
-If you're coming from SDL2, here are the major changes in SDL3:
-
-| SDL2 | SDL3 |
-|------|------|
-| `SDL_Init()` returns 0 on success | Returns `true` on success |
-| `SDL_QUIT` event | `SDL_EVENT_QUIT` |
-| `SDL_Rect` for rendering | `SDL_FRect` (float) |
-| `SDL_GetTicks()` returns Uint32 | Returns Uint64 |
-| `SDL_GetKeyboardState()` returns Uint8* | Returns bool* |
-| Position in `SDL_CreateWindow()` | Use `SDL_SetWindowPosition()` |
-
 ## Next Steps
 
 Now that you have the basics, explore these topics:
@@ -353,7 +340,6 @@ Now that you have the basics, explore these topics:
 ## Resources
 
 - [SDL3 Wiki](https://wiki.libsdl.org/SDL3) - Official documentation
-- [SDL3 Migration Guide](https://wiki.libsdl.org/SDL3/README/migration) - Moving from SDL2
 - [SDL GitHub](https://github.com/libsdl-org/SDL) - Source code and examples
 
 SDL3 provides a solid foundation for game development and multimedia applications. Start simple, experiment with the examples, and gradually build more complex projects!
