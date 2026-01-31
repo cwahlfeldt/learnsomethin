@@ -4,25 +4,92 @@ const currentYear = new Date().getFullYear();
 
 <footer class="site-footer">
   <div class="container footer-content">
-    <p>&copy; {currentYear} Learning Hub. Built with Astro.</p>
+    <div class="footer-decoration" aria-hidden="true">
+      <span class="deco-item">✨</span>
+      <span class="deco-item">📚</span>
+      <span class="deco-item">🎯</span>
+      <span class="deco-item">🚀</span>
+      <span class="deco-item">💡</span>
+    </div>
+    <p class="footer-text">
+      Made with <span class="heart">❤️</span> using <strong>Astro</strong>
+    </p>
+    <p class="footer-copy">&copy; {currentYear} Learning Hub</p>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    margin-top: 4rem;
-    padding: 2rem 0;
-    border-top: 1px solid var(--color-border);
-    background: var(--color-bg-soft);
+    margin-top: 6rem;
+    padding: 3rem 0 2rem;
+    border-top: 2px solid var(--color-border);
+    background: linear-gradient(135deg, var(--color-bg-soft) 0%, var(--color-bg-accent) 100%);
+    position: relative;
   }
 
   .footer-content {
     text-align: center;
     color: var(--color-text-muted);
-    font-size: 0.875rem;
   }
 
-  .footer-content p {
+  .footer-decoration {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  .deco-item {
+    animation: float 3s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  .deco-item:nth-child(1) { animation-delay: 0s; }
+  .deco-item:nth-child(2) { animation-delay: 0.5s; }
+  .deco-item:nth-child(3) { animation-delay: 1s; }
+  .deco-item:nth-child(4) { animation-delay: 1.5s; }
+  .deco-item:nth-child(5) { animation-delay: 2s; }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .footer-text {
+    font-size: 0.9375rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .heart {
+    color: var(--color-secondary);
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  .footer-text strong {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+
+  .footer-copy {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
     margin: 0;
   }
 </style>
