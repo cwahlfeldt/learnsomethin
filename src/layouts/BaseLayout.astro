@@ -38,5 +38,50 @@ const { title, description = 'Personal learning hub for tutorials and knowledge 
       document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
+
+  <script is:inline>
+    // Copy to clipboard functionality for code blocks
+    document.addEventListener('DOMContentLoaded', function() {
+      const codeBlocks = document.querySelectorAll('.prose pre');
+
+      codeBlocks.forEach(function(preBlock) {
+        // Wrap pre block in a container
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+        preBlock.parentNode.insertBefore(wrapper, preBlock);
+        wrapper.appendChild(preBlock);
+
+        // Create copy button
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-button';
+        copyButton.textContent = 'Copy';
+        copyButton.setAttribute('aria-label', 'Copy code to clipboard');
+
+        // Add click handler
+        copyButton.addEventListener('click', function() {
+          const code = preBlock.querySelector('code');
+          const text = code ? code.textContent : preBlock.textContent;
+
+          navigator.clipboard.writeText(text).then(function() {
+            copyButton.textContent = 'Copied!';
+            copyButton.classList.add('copied');
+
+            setTimeout(function() {
+              copyButton.textContent = 'Copy';
+              copyButton.classList.remove('copied');
+            }, 2000);
+          }).catch(function(err) {
+            console.error('Failed to copy:', err);
+            copyButton.textContent = 'Error';
+            setTimeout(function() {
+              copyButton.textContent = 'Copy';
+            }, 2000);
+          });
+        });
+
+        wrapper.appendChild(copyButton);
+      });
+    });
+  </script>
 </body>
 </html>

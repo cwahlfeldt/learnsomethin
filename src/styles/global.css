@@ -218,3 +218,42 @@ a:hover {
 .tutorial-card.hidden {
   display: none;
 }
+
+/* Copy to clipboard button */
+.code-block-wrapper {
+  position: relative;
+}
+
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--color-bg-muted);
+  border: 2px solid var(--color-border);
+  border-radius: 0;
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 10;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.copy-button:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.copy-button:active {
+  transform: scale(0.95);
+}
+
+.copy-button.copied {
+  background: var(--color-beginner);
+  color: var(--color-bg);
+  border-color: var(--color-beginner);
+}

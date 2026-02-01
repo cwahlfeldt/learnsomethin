@@ -1,28 +1,30 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import BaseLayout from './BaseLayout.astro';
-import DifficultyBadge from '../components/DifficultyBadge.astro';
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+import DifficultyBadge from "../components/DifficultyBadge.astro";
 
 interface Props {
   title: string;
-  tutorial: CollectionEntry<'tutorials'>;
+  tutorial: CollectionEntry<"tutorials">;
   headings: any[];
 }
 
 const { title, tutorial, headings } = Astro.props;
 const { data } = tutorial;
 
-const formattedDate = data.dateCreated.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
+const formattedDate = data.dateCreated.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
 });
 
-const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-}) : null;
+const updatedDate = data.dateUpdated
+  ? data.dateUpdated.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  : null;
 ---
 
 <BaseLayout title={title} description={data.description}>
@@ -30,23 +32,28 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
     <div class="container">
       <div class="article-layout" data-toc="closed">
         <div class="article-sidebar">
-          {headings.length > 0 && (
-            <>
-              <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-panel">
-                Contents
-              </button>
-              <nav id="toc-panel" class="toc" hidden>
-                <h3 class="toc-title">Contents</h3>
-                <ul class="toc-list">
-                  {headings.map(heading => (
-                    <li class={`toc-item toc-depth-${heading.depth}`}>
-                      <a href={`#${heading.slug}`}>{heading.text}</a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </>
-          )}
+          {
+            headings.length > 0 && (
+              <>
+                <button
+                  class="toc-toggle"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="toc-panel"
+                />
+                <nav id="toc-panel" class="toc" hidden>
+                  <h3 class="toc-title">Contents</h3>
+                  <ul class="toc-list">
+                    {headings.map((heading) => (
+                      <li class={`toc-item toc-depth-${heading.depth}`}>
+                        <a href={`#${heading.slug}`}>{heading.text}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </>
+            )
+          }
         </div>
 
         <div class="article-main">
@@ -65,21 +72,27 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
                 <time datetime={data.dateCreated.toISOString()}>
                   {formattedDate}
                 </time>
-                {updatedDate && (
-                  <span class="updated-date">Updated: {updatedDate}</span>
-                )}
-                {data.estimatedTime && (
-                  <span class="reading-time">{data.estimatedTime}</span>
-                )}
+                {
+                  updatedDate && (
+                    <span class="updated-date">Updated: {updatedDate}</span>
+                  )
+                }
+                {
+                  data.estimatedTime && (
+                    <span class="reading-time">{data.estimatedTime}</span>
+                  )
+                }
               </div>
 
-              {data.tags.length > 0 && (
-                <div class="article-tags">
-                  {data.tags.map(tag => (
-                    <span class="tag">{tag}</span>
-                  ))}
-                </div>
-              )}
+              {
+                data.tags.length > 0 && (
+                  <div class="article-tags">
+                    {data.tags.map((tag) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+                )
+              }
             </div>
           </header>
 
@@ -114,12 +127,11 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
     top: 110px;
   }
 
-
   .toc-toggle {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.45rem 0.7rem;
+    padding: 0.3rem 0.7rem;
     border: 2px solid var(--color-border);
     background: var(--color-bg);
     color: var(--color-text);
@@ -128,15 +140,16 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
     text-transform: uppercase;
     letter-spacing: 0.08em;
     cursor: pointer;
+    width: 34.6px;
   }
 
   .toc-toggle::after {
-    content: '+';
+    content: "+";
     font-size: 0.9rem;
   }
 
   .toc-toggle[aria-expanded="true"]::after {
-    content: '−';
+    content: "−";
   }
 
   .toc {
@@ -254,12 +267,12 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
   }
 
   .updated-date::before {
-    content: '•';
+    content: "•";
     margin-right: 1rem;
   }
 
   .reading-time::before {
-    content: '•';
+    content: "•";
     margin-right: 1rem;
   }
 
@@ -301,23 +314,23 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
 
 <script>
   function initTocToggle() {
-    const toggle = document.querySelector('.toc-toggle');
-    const panel = document.getElementById('toc-panel');
-    const layout = document.querySelector('.article-layout');
+    const toggle = document.querySelector(".toc-toggle");
+    const panel = document.getElementById("toc-panel");
+    const layout = document.querySelector(".article-layout");
     if (!toggle || !panel || !layout) return;
 
-    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute("aria-expanded", "false");
     panel.hidden = true;
-    layout.setAttribute('data-toc', 'closed');
+    layout.setAttribute("data-toc", "closed");
 
-    toggle.addEventListener('click', () => {
-      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!isOpen));
+    toggle.addEventListener("click", () => {
+      const isOpen = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", String(!isOpen));
       panel.hidden = isOpen;
-      layout.setAttribute('data-toc', isOpen ? 'closed' : 'open');
+      layout.setAttribute("data-toc", isOpen ? "closed" : "open");
     });
   }
 
   initTocToggle();
-  document.addEventListener('astro:page-load', initTocToggle);
+  document.addEventListener("astro:page-load", initTocToggle);
 </script>

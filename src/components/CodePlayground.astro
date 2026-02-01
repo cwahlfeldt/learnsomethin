@@ -8,13 +8,19 @@ const { code, language = 'javascript' } = Astro.props;
 const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
 ---
 
+<!-- Highlight.js for syntax highlighting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
 <div class="code-playground">
   <div class="playground-editor">
     <div class="editor-header">
       <span class="editor-label">Code Editor</span>
-      <button class="run-button" data-playground={id}>Run Code</button>
+      <div class="button-group">
+        <button class="copy-playground-button" data-playground={id}>Copy</button>
+        <button class="run-button" data-playground={id}>Run Code</button>
+      </div>
     </div>
-    <pre class="editor-content"><code>{code}</code></pre>
+    <pre class="editor-content"><code class={`language-${language}`} data-playground-code={id}>{code}</code></pre>
   </div>
 
   <div class="playground-output">
@@ -63,8 +69,14 @@ const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
     letter-spacing: 0.08em;
   }
 
+  .button-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+
   .run-button,
-  .clear-button {
+  .clear-button,
+  .copy-playground-button {
     padding: 0.3rem 0.75rem;
     font-size: 0.75rem;
     background: var(--color-text);
@@ -78,14 +90,22 @@ const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
     font-weight: 700;
   }
 
-  .clear-button {
+  .clear-button,
+  .copy-playground-button {
     background: var(--color-bg);
     color: var(--color-text);
     border: 2px solid var(--color-border);
   }
 
+  .copy-playground-button.copied {
+    background: var(--color-beginner);
+    color: var(--color-bg);
+    border-color: var(--color-beginner);
+  }
+
   .run-button:hover,
-  .clear-button:hover {
+  .clear-button:hover,
+  .copy-playground-button:hover {
     transform: translateY(-1px);
   }
 
@@ -110,10 +130,31 @@ const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
     color: var(--color-text-muted);
     font-style: italic;
   }
+
+  /* Override highlight.js background to match component design */
+  .editor-content code.hljs {
+    background: transparent;
+    padding: 0;
+  }
+
+  .editor-content .hljs {
+    background: transparent;
+  }
 </style>
+
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
 <script>
   function initPlaygrounds() {
+    // Apply syntax highlighting to code blocks
+    // @ts-ignore - hljs is loaded from CDN
+    if (typeof hljs !== 'undefined') {
+      document.querySelectorAll('[data-playground-code]').forEach(block => {
+        // @ts-ignore
+        hljs.highlightElement(block);
+      });
+    }
+
     document.querySelectorAll('[data-playground]').forEach(button => {
       const playgroundId = button.getAttribute('data-playground');
 
@@ -152,6 +193,31 @@ const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
         button.addEventListener('click', () => {
           const output = document.getElementById(`output-${playgroundId}`);
           if (output) output.textContent = '';
+        });
+      }
+
+      if (button.classList.contains('copy-playground-button')) {
+        button.addEventListener('click', () => {
+          const editor = button.closest('.code-playground')?.querySelector('.editor-content code');
+          if (!editor) return;
+
+          const code = editor.textContent || '';
+
+          navigator.clipboard.writeText(code).then(() => {
+            button.textContent = 'Copied!';
+            button.classList.add('copied');
+
+            setTimeout(() => {
+              button.textContent = 'Copy';
+              button.classList.remove('copied');
+            }, 2000);
+          }).catch(err => {
+            console.error('Failed to copy:', err);
+            button.textContent = 'Error';
+            setTimeout(() => {
+              button.textContent = 'Copy';
+            }, 2000);
+          });
         });
       }
     });
