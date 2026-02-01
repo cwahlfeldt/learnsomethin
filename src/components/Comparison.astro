@@ -50,43 +50,47 @@ const { good, bad, title = 'Comparison' } = Astro.props;
 
 <style>
   .comparison {
-    margin: 1.5rem 0;
+    margin: 2rem 0;
     border: 1px solid var(--color-border);
     border-radius: var(--card-radius);
     overflow: hidden;
-    background: var(--color-bg-soft);
+    background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-soft) 100%);
+    box-shadow: var(--card-shadow);
   }
 
   .comparison-title {
     margin: 0;
-    padding: 0.75rem 1rem;
-    background: var(--color-bg-muted);
+    padding: 0.85rem 1rem;
+    background: var(--color-bg);
     border-bottom: 1px solid var(--color-border);
-    font-size: 0.9375rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: var(--color-text);
   }
 
   .comparison-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--color-border);
   }
 
   .comparison-side {
-    border-right: 1px solid var(--color-border);
-  }
-
-  .comparison-side:last-child {
-    border-right: none;
+    background: var(--card-bg);
+    --side-accent: var(--color-text);
+    --side-soft: var(--color-bg-soft);
   }
 
   .comparison-side.bad {
-    background: var(--color-advanced-bg);
+    --side-accent: var(--color-advanced);
+    --side-soft: var(--color-advanced-bg);
   }
 
   .comparison-side.good {
-    background: var(--color-beginner-bg);
+    --side-accent: var(--color-beginner);
+    --side-soft: var(--color-beginner-bg);
   }
 
   .comparison-header {
@@ -94,18 +98,11 @@ const { good, bad, title = 'Comparison' } = Astro.props;
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: var(--color-bg);
+    background: var(--side-soft);
     border-bottom: 1px solid var(--color-border);
     font-size: 0.875rem;
-    font-weight: 600;
-  }
-
-  .comparison-side.bad .comparison-header {
-    color: var(--color-advanced);
-  }
-
-  .comparison-side.good .comparison-header {
-    color: var(--color-beginner);
+    font-weight: 700;
+    color: var(--side-accent);
   }
 
   .comparison-header svg {
@@ -120,12 +117,13 @@ const { good, bad, title = 'Comparison' } = Astro.props;
     margin: 0;
     background: var(--color-bg);
     padding: 1rem;
-    border-radius: 6px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
     overflow-x: auto;
   }
 
   .comparison-content code {
-    font-family: ui-monospace, monospace;
+    font-family: var(--font-mono);
     font-size: 0.875rem;
     line-height: 1.5;
   }
@@ -133,15 +131,6 @@ const { good, bad, title = 'Comparison' } = Astro.props;
   @media (max-width: 768px) {
     .comparison-grid {
       grid-template-columns: 1fr;
-    }
-
-    .comparison-side {
-      border-right: none;
-      border-bottom: 1px solid var(--color-border);
-    }
-
-    .comparison-side:last-child {
-      border-bottom: none;
     }
   }
 </style>

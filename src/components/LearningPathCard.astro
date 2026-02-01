@@ -55,10 +55,10 @@ const { data } = path;
 <style>
   .learning-path-card {
     background: var(--card-bg);
-    border: 2px solid var(--color-primary);
+    border: 1px solid var(--card-border);
     border-radius: var(--card-radius);
     box-shadow: var(--card-shadow);
-    transition: all 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     position: relative;
     overflow: hidden;
   }
@@ -69,17 +69,19 @@ const { data } = path;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(to right, var(--color-primary), var(--color-primary-soft));
+    height: 5px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
   }
 
   .learning-path-card:hover {
     box-shadow: var(--card-shadow-hover);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    border-color: var(--color-primary-light);
   }
 
   .path-link {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 1.5rem;
     padding: 1.5rem;
@@ -89,14 +91,15 @@ const { data } = path;
 
   .path-indicator {
     flex-shrink: 0;
-    width: 48px;
-    height: 48px;
+    width: 54px;
+    height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--color-primary-soft);
     color: var(--color-primary);
-    border-radius: 50%;
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
   }
 
   .path-content {
@@ -106,15 +109,16 @@ const { data } = path;
 
   .path-title {
     margin: 0 0 0.5rem;
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 1.3rem;
+    font-weight: 700;
     color: var(--color-text);
+    font-family: var(--font-display);
   }
 
   .path-description {
     margin: 0 0 1rem;
     color: var(--color-text-soft);
-    font-size: 0.9375rem;
+    font-size: 0.95rem;
     line-height: 1.5;
   }
 
@@ -139,16 +143,17 @@ const { data } = path;
   .path-arrow {
     flex-shrink: 0;
     color: var(--color-text-muted);
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, color 0.2s ease;
   }
 
   .learning-path-card:hover .path-arrow {
-    transform: translateX(4px);
+    transform: translateX(6px);
+    color: var(--color-primary);
   }
 
   @media (max-width: 640px) {
     .path-link {
-      flex-direction: column;
+      grid-template-columns: 1fr;
       align-items: flex-start;
       gap: 1rem;
     }

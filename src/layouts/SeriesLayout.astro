@@ -42,12 +42,14 @@ const { title, tutorial, headings, seriesNav } = Astro.props;
 
   .series-badge {
     display: inline-block;
-    padding: 0.5rem 1rem;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border: 1px solid var(--color-primary);
+    padding: 0.45rem 1rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-bg);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid transparent;
   }
 </style>

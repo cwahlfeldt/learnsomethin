@@ -21,8 +21,8 @@ const currentYear = new Date().getFullYear();
 <style>
   .site-footer {
     margin-top: 6rem;
-    padding: 3rem 0 2rem;
-    border-top: 2px solid var(--color-border);
+    padding: 3rem 0 2.5rem;
+    border-top: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-bg-soft) 0%, var(--color-bg-accent) 100%);
     position: relative;
   }
@@ -36,12 +36,13 @@ const currentYear = new Date().getFullYear();
     display: flex;
     justify-content: center;
     gap: 1.5rem;
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+    font-size: 1.25rem;
+    opacity: 0.7;
   }
 
   .deco-item {
-    animation: float 3s ease-in-out infinite;
+    animation: drift 6s ease-in-out infinite;
     display: inline-block;
   }
 
@@ -51,12 +52,12 @@ const currentYear = new Date().getFullYear();
   .deco-item:nth-child(4) { animation-delay: 1.5s; }
   .deco-item:nth-child(5) { animation-delay: 2s; }
 
-  @keyframes float {
+  @keyframes drift {
     0%, 100% {
       transform: translateY(0);
     }
     50% {
-      transform: translateY(-8px);
+      transform: translateY(-6px);
     }
   }
 
@@ -67,7 +68,7 @@ const currentYear = new Date().getFullYear();
 
   .heart {
     color: var(--color-secondary);
-    animation: heartbeat 1.5s ease-in-out infinite;
+    animation: heartbeat 1.6s ease-in-out infinite;
   }
 
   @keyframes heartbeat {
@@ -80,10 +81,7 @@ const currentYear = new Date().getFullYear();
   }
 
   .footer-text strong {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--color-primary);
     font-weight: 700;
   }
 
