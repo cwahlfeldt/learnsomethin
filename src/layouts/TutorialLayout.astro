@@ -28,19 +28,24 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
 <BaseLayout title={title} description={data.description}>
   <article class="tutorial-article">
     <div class="container">
-      <div class="article-layout">
+      <div class="article-layout" data-toc="closed">
         <div class="article-sidebar">
           {headings.length > 0 && (
-            <nav class="toc">
-              <h3 class="toc-title">Contents</h3>
-              <ul class="toc-list">
-                {headings.map(heading => (
-                  <li class={`toc-item toc-depth-${heading.depth}`}>
-                    <a href={`#${heading.slug}`}>{heading.text}</a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <>
+              <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-panel">
+                Contents
+              </button>
+              <nav id="toc-panel" class="toc" hidden>
+                <h3 class="toc-title">Contents</h3>
+                <ul class="toc-list">
+                  {headings.map(heading => (
+                    <li class={`toc-item toc-depth-${heading.depth}`}>
+                      <a href={`#${heading.slug}`}>{heading.text}</a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </>
           )}
         </div>
 
@@ -89,14 +94,19 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
 
 <style>
   .tutorial-article {
-    padding: 3rem 0 5rem;
+    padding: 3rem 0 4.5rem;
   }
 
   .article-layout {
     display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 3.5rem;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
     align-items: start;
+  }
+
+  .article-layout[data-toc="open"] {
+    grid-template-columns: 220px 1fr;
+    gap: 3rem;
   }
 
   .article-sidebar {
@@ -104,12 +114,38 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
     top: 110px;
   }
 
+
+  .toc-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.7rem;
+    border: 2px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  .toc-toggle::after {
+    content: '+';
+    font-size: 0.9rem;
+  }
+
+  .toc-toggle[aria-expanded="true"]::after {
+    content: '−';
+  }
+
   .toc {
     background: var(--card-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--card-radius);
-    padding: 1.1rem;
-    box-shadow: var(--card-shadow);
+    border: 2px solid var(--color-border);
+    border-radius: 0;
+    padding: 1rem;
+    margin-top: 0.75rem;
+    width: 100%;
   }
 
   .toc-title {
@@ -137,7 +173,7 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
     text-decoration: none;
     display: block;
     line-height: 1.4;
-    padding-left: 0.6rem;
+    padding-left: 0.5rem;
     border-left: 2px solid transparent;
   }
 
@@ -163,9 +199,9 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
     color: var(--color-text-muted);
     text-decoration: none;
     margin-bottom: 1rem;
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-border);
+    padding: 0.35rem 0.6rem;
+    border-radius: 0;
+    border: 2px solid var(--color-border);
     background: var(--color-bg);
   }
 
@@ -177,16 +213,15 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
     margin: 0 0 1.5rem;
     font-size: 2.6rem;
     line-height: 1.2;
-    font-family: var(--font-display);
   }
 
   .article-meta {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 1.25rem 1.5rem;
-    border: 1px solid var(--color-border);
-    border-radius: 18px;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--color-border);
+    border-radius: 0;
     background: var(--color-bg-soft);
     margin-bottom: 2rem;
   }
@@ -200,13 +235,14 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
 
   .category-badge {
     font-size: 0.75rem;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
+    padding: 0.25rem 0.6rem;
+    border-radius: 0;
+    background: var(--color-bg);
+    color: var(--color-text);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    border: 2px solid var(--color-border);
   }
 
   .meta-info {
@@ -236,10 +272,10 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
   .tag {
     font-size: 0.75rem;
     padding: 0.25rem 0.65rem;
-    border-radius: 999px;
+    border-radius: 0;
     background: var(--color-bg);
     color: var(--color-text-muted);
-    border: 1px solid var(--color-border);
+    border: 1px dashed var(--color-border);
   }
 
   @media (max-width: 968px) {
@@ -262,3 +298,26 @@ const updatedDate = data.dateUpdated ? data.dateUpdated.toLocaleDateString('en-U
     }
   }
 </style>
+
+<script>
+  function initTocToggle() {
+    const toggle = document.querySelector('.toc-toggle');
+    const panel = document.getElementById('toc-panel');
+    const layout = document.querySelector('.article-layout');
+    if (!toggle || !panel || !layout) return;
+
+    toggle.setAttribute('aria-expanded', 'false');
+    panel.hidden = true;
+    layout.setAttribute('data-toc', 'closed');
+
+    toggle.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+      panel.hidden = isOpen;
+      layout.setAttribute('data-toc', isOpen ? 'closed' : 'open');
+    });
+  }
+
+  initTocToggle();
+  document.addEventListener('astro:page-load', initTocToggle);
+</script>

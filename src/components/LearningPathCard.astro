@@ -55,10 +55,10 @@ const { data } = path;
 <style>
   .learning-path-card {
     background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--card-radius);
-    box-shadow: var(--card-shadow);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    box-shadow: none;
+    transition: transform 0.2s ease, background 0.2s ease;
     position: relative;
     overflow: hidden;
   }
@@ -69,14 +69,13 @@ const { data } = path;
     top: 0;
     left: 0;
     right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    height: 4px;
+    background: var(--color-border);
   }
 
   .learning-path-card:hover {
-    box-shadow: var(--card-shadow-hover);
-    transform: translateY(-4px);
-    border-color: var(--color-primary-light);
+    transform: translateY(-2px);
+    background: var(--color-bg-muted);
   }
 
   .path-link {
@@ -91,15 +90,15 @@ const { data } = path;
 
   .path-indicator {
     flex-shrink: 0;
-    width: 54px;
-    height: 54px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-primary-soft);
-    color: var(--color-primary);
-    border-radius: 16px;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-radius: 0;
+    border: 2px solid var(--color-border);
   }
 
   .path-content {
@@ -112,7 +111,6 @@ const { data } = path;
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--color-text);
-    font-family: var(--font-display);
   }
 
   .path-description {
@@ -147,8 +145,8 @@ const { data } = path;
   }
 
   .learning-path-card:hover .path-arrow {
-    transform: translateX(6px);
-    color: var(--color-primary);
+    transform: translateX(4px);
+    color: var(--color-secondary);
   }
 
   @media (max-width: 640px) {

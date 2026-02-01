@@ -29,11 +29,10 @@ const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
 <style>
   .code-playground {
     margin: 1.5rem 0;
-    border: 1px solid var(--color-border);
-    border-radius: var(--card-radius);
+    border: 2px solid var(--color-border);
+    border-radius: 0;
     overflow: hidden;
     background: var(--card-bg);
-    box-shadow: var(--card-shadow);
   }
 
   .playground-editor,
@@ -52,7 +51,7 @@ const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
     align-items: center;
     padding: 0.6rem 1rem;
     background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 2px solid var(--color-border);
   }
 
   .editor-label,
@@ -68,12 +67,12 @@ const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
   .clear-button {
     padding: 0.3rem 0.75rem;
     font-size: 0.75rem;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    color: white;
-    border: none;
-    border-radius: 999px;
+    background: var(--color-text);
+    color: var(--color-bg);
+    border: 2px solid var(--color-text);
+    border-radius: 0;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-weight: 700;
@@ -81,14 +80,13 @@ const id = `playground-${Math.random().toString(36).substr(2, 9)}`;
 
   .clear-button {
     background: var(--color-bg);
-    color: var(--color-text-soft);
-    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    border: 2px solid var(--color-border);
   }
 
   .run-button:hover,
   .clear-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 16px -12px rgba(0, 0, 0, 0.5);
   }
 
   .editor-content,

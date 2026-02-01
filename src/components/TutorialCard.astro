@@ -63,25 +63,15 @@ const hiddenTagsCount = data.tags.length - 3;
 
 <style>
   .tutorial-card {
-    --category-color: var(--color-primary);
-    --category-soft: var(--color-primary-soft);
+    --category-color: var(--color-text);
+    --category-soft: var(--color-bg);
     background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--card-radius);
-    box-shadow: var(--card-shadow);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    border: 2px solid var(--card-border);
+    border-radius: 0;
+    box-shadow: none;
+    transition: background 0.2s ease, transform 0.2s ease;
     position: relative;
     overflow: hidden;
-  }
-
-  .tutorial-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, rgba(20, 184, 166, 0.08), rgba(249, 115, 22, 0.08));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
   }
 
   .tutorial-card[data-category="programming"] {
@@ -109,27 +99,9 @@ const hiddenTagsCount = data.tags.length - 3;
     --category-soft: var(--color-cat-gamedev-soft);
   }
 
-  .tutorial-card::before {
-    content: '';
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
-    opacity: 0.35;
-    pointer-events: none;
-  }
-
   .tutorial-card:hover {
-    box-shadow: var(--card-shadow-hover);
-    border-color: var(--color-primary-light);
-    transform: translateY(-6px);
-  }
-
-  .tutorial-card:hover::after {
-    opacity: 1;
+    background: var(--color-bg-muted);
+    transform: translateY(-2px);
   }
 
   .card-link {
@@ -161,11 +133,11 @@ const hiddenTagsCount = data.tags.length - 3;
 
   .status-badge {
     font-size: 0.7rem;
-    padding: 0.25rem 0.6rem;
-    border-radius: 999px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0;
     background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    color: var(--color-text-muted);
+    border: 2px solid var(--color-border);
+    color: var(--color-text);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     white-space: nowrap;
@@ -199,14 +171,14 @@ const hiddenTagsCount = data.tags.length - 3;
 
   .category-badge {
     font-size: 0.7rem;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    background: var(--category-soft);
+    padding: 0.25rem 0.6rem;
+    border-radius: 0;
+    background: var(--color-bg);
     color: var(--category-color);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    border: 2px solid var(--color-border);
   }
 
   .tags {
@@ -218,7 +190,7 @@ const hiddenTagsCount = data.tags.length - 3;
   .tag {
     font-size: 0.75rem;
     padding: 0.25rem 0.625rem;
-    border-radius: 999px;
+    border-radius: 0;
     background: var(--color-bg);
     color: var(--color-text-muted);
     border: 1px dashed var(--color-border);
